@@ -70,7 +70,7 @@ class Detector:
 
             # Check for other finger tips landmark
             for i in range(0, 3):
-                if self.landmark_list[self.tipIds[i]][2] < self.landmark_list[self.tipIds[i] - 2][2]:
+                if self.landmark_list[self.fingerTips[i]][2] < self.landmark_list[self.fingerTips[i] - 2][2]:
                     list_fingers.append(1)
                 else:
                     list_fingers.append(0)
