@@ -99,6 +99,7 @@ while True:
     # cv2.putText(img, str(int(fps)),(10,130), cv2.FONT_HERSHEY_SIMPLEX, 2,(255,0,255),2)
 
     cv2.imshow("img", img)
+    cv2.imshow('test', imgCanvas)
     # Esc to exit the loop and break the frame
     if key & 0xFF == 27:
         break
