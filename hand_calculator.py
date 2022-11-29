@@ -31,6 +31,8 @@ while True:
     h, w, _ = img.shape
     # Flip the image vertically
     img = cv2.flip(img, 1)
+    cv2.rectangle(img, (450, 0), (610, 30), (0, 0, 0), -1)
+    cv2.putText(img, "Enable Calculation", (460, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 250, 127), 2)
     key = cv2.waitKey(1)
 
     # Detect hand from the frame
@@ -99,7 +101,7 @@ while True:
     cv2.imshow("img", img)
     # Esc to exit the loop and break the frame
     if key & 0xFF == 27:
-            break
-        
+        break
+
 cv2.destroyAllWindows()
 cap.release()
