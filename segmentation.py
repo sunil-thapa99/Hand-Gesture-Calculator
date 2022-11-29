@@ -90,10 +90,9 @@ def segment(heighty, widthx, img):
                     for i_s in range(1, hs):
                         for j_s in range(1, ws):
                             img1[i_s, j_s] = img[i_nhigh + i_s, j_left + j_s]
-
+                    img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
                     c.append(img1)
 
-                    # ********
                     j_right = 0
                     j_left = 0
 
@@ -112,11 +111,7 @@ def segment_digits(img):
 
     height, weight = invCanvas.shape
     images = segFun(height, weight, invCanvas)
-    count = 0
-    # for digits in images:
-    #     cv.imshow("demos(%d)" % count, digits)
-    #     count += 1
-    # cv.waitKey(0)
+
     return images
 
 
