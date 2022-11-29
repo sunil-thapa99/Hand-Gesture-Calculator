@@ -55,6 +55,7 @@ while True:
                 if 500 < x1 < 600:
                     is_calculator = True
 
+
         # Calculate the distance between two circumference points
         distance = math.hypot(x2 - x1, y2 - y1)
         # cv2.putText(img, str(distance),(10,70), cv2.FONT_HERSHEY_SIMPLEX, 1,(255,0,255),1)
