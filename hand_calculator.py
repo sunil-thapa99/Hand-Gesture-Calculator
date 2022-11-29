@@ -55,12 +55,13 @@ while True:
                 if 500 < x1 < 600:
                     is_calculator = True
 
+
         # Calculate the distance between two circumference points
         distance = math.hypot(x2 - x1, y2 - y1)
         # cv2.putText(img, str(distance),(10,70), cv2.FONT_HERSHEY_SIMPLEX, 1,(255,0,255),1)
 
         # Check if the tip of thumb and index fingers are close
-        if 15 < distance < 40:
+        if distance < 50:
             temp = True
         else:
             temp = False
@@ -101,6 +102,8 @@ while True:
     cv2.imshow("img", img)
     cv2.imshow('test', imgCanvas)
     # Esc to exit the loop and break the frame
+    if key & 0xFF == 99:
+        imgCanvas = np.zeros((360, 640, 3), np.uint8)
     if key & 0xFF == 27:
         break
 
