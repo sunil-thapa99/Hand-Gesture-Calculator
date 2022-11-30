@@ -4,7 +4,7 @@ import numpy as np
 import math
 import detector as dt
 
-from test import test_pipeline_equation
+from segmentation_final import test_pipeline_equation
 
 pTime = 0
 cTime = 0
@@ -12,11 +12,11 @@ cTime = 0
 # Get video from webcam
 cap = cv2.VideoCapture(0)
 # Set width and height of video frame
-cap.set(3, 640)
-cap.set(4, 360)
+cap.set(3, 1280)
+cap.set(4, 720)
 
 # Create a black canvas 
-imgCanvas = np.zeros((360, 640, 3), np.uint8)
+imgCanvas = np.zeros((720, 1280, 3), np.uint8)
 
 
 hand_detector = dt.Detector(mode=False)
@@ -30,15 +30,23 @@ count = 0
 
 while True:
     success, img = cap.read()
-    img = cv2.resize(img, (640, 360))
+    img = cv2.resize(img, (1280, 720))
     h, w, _ = img.shape
     # Flip the image vertically
     img = cv2.flip(img, 1)
+    key = cv2.waitKey(1)
 
     # Button for calculation
-    cv2.rectangle(img, (450, 0), (610, 30), (0, 0, 0), -1)
-    cv2.putText(img, "Enable Calculation", (460, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 250, 127), 2)
-    key = cv2.waitKey(1)
+    cv2.rectangle(img, (950, 0), (1110, 30), (0, 0, 0), -1)
+    cv2.putText(img, "Enable Calculation", (960, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 250, 127), 2)
+
+    # Clear Calculation
+    cv2.rectangle(img, (750, 0), (910, 30), (0, 0, 0), -1)
+    cv2.putText(img, "Clear Calculation", (760, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 250, 127), 2)
+
+    # Clear Screen
+    cv2.rectangle(img, (550, 0), (670, 30), (0, 0, 0), -1)
+    cv2.putText(img, "Clear Screen", (560, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 250, 127), 2)
 
     # Detect hand from the frame
     img = hand_detector.detect_hand(img)
@@ -57,11 +65,13 @@ while True:
         if finger_list[1] and finger_list[2]:
             # prevx, prevy = 0, 0
             if y1 < 150:
-                if 500 < x1 < 600:
+                if 950 < x1 < 1100:
                     is_calculator = True
-        print(finger_list)
-        if (finger_list[3] and finger_list[1] and finger_list[2] ):
-            count = 0
+                elif 750 < x1 < 910:
+                    count = 0
+                elif 550 < x1 < 640:
+                    imgCanvas = np.zeros((720, 1280, 3), np.uint8)
+
         #     cv2.circle(img, (x1, y1), 10, (0, 255, 0), cv2.FILLED)
         #     if prevx == 0 and prevy == 0:
         #         prevx, prevy = x1, y1
@@ -79,7 +89,7 @@ while True:
 
         # Check if the tip of thumb and index fingers are close
         # print(distance)
-        if distance < 15:
+        if distance < 50:
             temp = True
         else:
             temp = False
@@ -104,7 +114,7 @@ while True:
         cv2.putText(imgCanvas, f'{calculation[0]} = {calculation[1]}',(10,50), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255,0,255),2)
         count += 1
     if count == 0:
-        cv2.rectangle(imgCanvas, (10, 30), (110, 70), (0, 0, 0), -1)
+        cv2.rectangle(imgCanvas, (10, 30), (210, 70), (0, 0, 0), -1)
 
     # Convert the canvas to grayscale image
     grayCanvas = cv2.cvtColor(imgCanvas, cv2.COLOR_BGR2GRAY)
@@ -126,11 +136,11 @@ while True:
     # cv2.putText(img, str(int(fps)),(10,130), cv2.FONT_HERSHEY_SIMPLEX, 2,(255,0,255),2)
     
     cv2.imshow("img", img)
-    cv2.imshow("invCanvas", invCanvas)
-    cv2.imshow('test', imgCanvas)
+    # cv2.imshow("invCanvas", invCanvas)
+    # cv2.imshow('test', imgCanvas)
     # Esc to exit the loop and break the frame
-    if key & 0xFF == 99:
-        imgCanvas = np.zeros((360, 640, 3), np.uint8)
+    # if key & 0xFF == 99:
+    #     imgCanvas = np.zeros((720, 1280, 3), np.uint8)
     if key & 0xFF == 27:
         break
 

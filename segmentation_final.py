@@ -130,11 +130,4 @@ def test_pipeline_equation(img=None, image_path=''):
 
 
 if __name__ == '__main__':
-    # from segmentation import segment_digits
     test_pipeline_equation(image_path='test_equation4.jpg')
-    # test_pipeline_equation('1.png')
-    # test_pipeline_equation('4.png')
-    # test_pipeline_equation('9.png')
-    # test_pipeline_equation('plus.png')
-    # test_pipeline_equation('mul.png')
-
