@@ -1,9 +1,11 @@
 import numpy as np
 import cv2 as cv
-
+from tensorflow import keras
+model = keras.models.load_model('digit_model.h5')
 def segment(heighty, widthx, img):
-
-    c = []
+    chars = []
+    labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'add', 'div', 'mul', 'sub']
+    # c = []
     i = 0
     flag_dot = 0
     i_low = 0
@@ -34,7 +36,7 @@ def segment(heighty, widthx, img):
         if ((i_low != 0) & (i_high != 0)):
             flag_dots = 0
             for line_j in range(0, widthx - 1):
-                lj = line_j
+                # lj = line_j
                 count_cr = 0
                 for line_i in range(i_high, i_low):
                     avalue1 = np.mean(img[line_i, line_j])
@@ -83,16 +85,31 @@ def segment(heighty, widthx, img):
                                 img[v_i - 1, j_right] = 255
 
 
-                    hs = i_nlow - i_nhigh
-                    ws = j_right - j_left
+                    hs = abs(i_nlow - i_nhigh)
+                    ws = abs(j_right - j_left)
                     img1 = np.zeros((hs, ws, 1), np.uint8)
                     img1[:] = (255)
                     for i_s in range(1, hs):
                         for j_s in range(1, ws):
                             img1[i_s, j_s] = img[i_nhigh + i_s, j_left + j_s]
+                    cv.imshow("before resize image", img1)
+                    cv.waitKey(1000)
+                    img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
                     img1= cv.copyMakeBorder(img1,50,50,50,50,cv.BORDER_CONSTANT,value=[255, 255, 255])
                     img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
-                    c.append(img1)
+                    cv.imshow("segmented image", img1)
+                    cv.waitKey(1000)
+                    padded = np.array(img1)
+                    padded = padded / 255.
+                    padded = np.expand_dims(padded, axis=0)
+                    padded = np.expand_dims(padded, axis=-1)
+                    print("shape of padded:", padded.shape)
+                    pred = model.predict(padded)
+                    pred = np.argmax(pred, axis=1)
+
+                    label = labels[pred[0]]
+                    print("Prediction values:", label)
+                    chars.append(label)
 
                     j_right = 0
                     j_left = 0
@@ -101,7 +118,24 @@ def segment(heighty, widthx, img):
             i_low = 0
         i = i + 1
 
-    return (c)
+    e = ''
+    for i in chars:
+        if i == 'add':
+            e += '+'
+        elif i == 'sub':
+            e += '-'
+        elif i == 'mul':
+            e += '*'
+        elif i == 'div':
+            e += '/'
+        else:
+            e += i
+    try:
+        v = eval(e)
+    except:
+        v = ''
+    print('Value of the expression {} : {}'.format(e, v))
+    return (e, v)
 
 def segment_digits(img):
     # Convert the canvas to grayscale image
@@ -114,28 +148,31 @@ def segment_digits(img):
     images = segment(height, weight, invCanvas)
     return images
 
-
-from tensorflow import keras
-model = keras.models.load_model('digit_model.h5')
-
-img = cv.imread('i.jpeg')
-imgs = segment_digits(img)
-# for ig in imgs:
-#     cv.imshow('img', ig)
+#
+# from tensorflow import keras
+# model = keras.models.load_model('digit_model.h5')
+#
+# img = cv.imread('i.jpeg')
+# imgs = segment_digits(img)
+# # for ig in imgs:
+# #     cv.imshow('img', ig)
+# #     cv.waitKey(0)
+#
+# labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'add', 'div', 'mul', 'sub']
+# for padded in imgs:
+#     cv.imshow('img', padded)
 #     cv.waitKey(0)
-
-labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'add', 'div', 'mul', 'sub']
-for padded in imgs:
-    cv.imshow('img', padded)
-    cv.waitKey(0)
-    padded = np.array(padded)
-    padded = padded/255.
-    padded = np.expand_dims(padded, axis=0)
-    padded = np.expand_dims(padded, axis=-1)
-    # img = np.expand_dims(img, axis=0)
-    pred = model.predict(padded)
-    pred = np.argmax(pred, axis=1)
-    label = labels[pred[0]]
-    print(pred, label)
-    
-cv.destroyAllWindows()
+#     padded = np.array(padded)
+#     padded = padded/255.
+#     padded = np.expand_dims(padded, axis=0)
+#     padded = np.expand_dims(padded, axis=-1)
+#     # img = np.expand_dims(img, axis=0)
+#     pred = model.predict(padded)
+#     pred = np.argmax(pred, axis=1)
+#     label = labels[pred[0]]
+#     print(pred, label)
+#
+# cv.destroyAllWindows()
+sample_img = cv.imread("test4.jpg")
+result = segment_digits(sample_img)
+print("result:", result)
