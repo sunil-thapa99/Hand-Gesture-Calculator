@@ -62,9 +62,10 @@ import numpy as np
 from tensorflow import keras
 model = keras.models.load_model('digit_model.h5')
 
-def test_pipeline_equation(image_path):
+def test_pipeline_equation(img=None, image_path=''):
     chars = []
-    img = cv2.imread(image_path)
+    if image_path:
+        img = cv2.imread(image_path)
     img = cv2.resize(img, (800, 800))
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # blurred = cv2.GaussianBlur(img_gray, (3, 3), 0)
@@ -102,11 +103,11 @@ def test_pipeline_equation(image_path):
             cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
             cv2.putText(img, label, (x-5, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
-    figure = plt.figure(figsize=(10, 10))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    plt.imshow(img)
-    plt.axis('off')
-    plt.show()
+    # figure = plt.figure(figsize=(10, 10))
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # plt.imshow(img)
+    # plt.axis('off')
+    # plt.show()
     
     e = ''
     for i in chars:
@@ -120,7 +121,20 @@ def test_pipeline_equation(image_path):
             e += '/'
         else:
             e += i
-    v = eval(e)
+    try:
+        v = eval(e)
+    except:
+        v = ''
     print('Value of the expression {} : {}'.format(e, v)) 
+    return (e, v)
 
-test_pipeline_equation('test_equation4.jpg')
+
+if __name__ == '__main__':
+    # from segmentation import segment_digits
+    test_pipeline_equation(image_path='test_equation4.jpg')
+    # test_pipeline_equation('1.png')
+    # test_pipeline_equation('4.png')
+    # test_pipeline_equation('9.png')
+    # test_pipeline_equation('plus.png')
+    # test_pipeline_equation('mul.png')
+

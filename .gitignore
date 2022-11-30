@@ -5,3 +5,4 @@ __pycache__/
 *.jpg
 dataset/
 dataset/*
+__pycache__/*

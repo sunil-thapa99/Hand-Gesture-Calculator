@@ -11,7 +11,7 @@ class Detector:
         self.mpHands = mediapipe.solutions.hands
         self.hands = self.mpHands.Hands(self.mode)
         self.mpDraw = mediapipe.solutions.drawing_utils
-        self.fingerTips = [4, 8, 12]
+        self.fingerTips = [4, 8, 12, 16, 20]
 
     def detect_hand(self, img):
         '''
@@ -63,13 +63,13 @@ class Detector:
         list_fingers = []
         if len(self.landmark_list) != 0:
             # Check for the thumb position
-            if self.landmark_list[self.fingerTips[0]][1] < self.landmark_list[self.fingerTips[0] - 1][1]:
+            if self.landmark_list[self.fingerTips[0]][1] > self.landmark_list[self.fingerTips[0] - 1][1]:
                 list_fingers.append(1)
             else:
                 list_fingers.append(0)
 
             # Check for other finger tips landmark
-            for i in range(0, 3):
+            for i in range(1, 5):
                 if self.landmark_list[self.fingerTips[i]][2] < self.landmark_list[self.fingerTips[i] - 2][2]:
                     list_fingers.append(1)
                 else:
@@ -82,13 +82,13 @@ if __name__ == '__main__':
 
     while True:
         isTrue, frame = cap.read()
-        
+        pTime = 0
         # Detect hand and the position of the joints
-        frame = detector.findHands(frame)
-        landmark_list = detector.findPos(frame)
+        frame = detector.detect_hand(frame)
+        landmark_list = detector.finger_position(frame)
 
         # Check if fingers are positioned up
-        f = detector.fingerUp()
+        f = detector.is_finger_up()
 
         # Compute FPS
         cTime = time.time()
