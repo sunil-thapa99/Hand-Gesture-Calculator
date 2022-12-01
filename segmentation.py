@@ -92,12 +92,21 @@ def segment(heighty, widthx, img):
                     for i_s in range(1, hs):
                         for j_s in range(1, ws):
                             img1[i_s, j_s] = img[i_nhigh + i_s, j_left + j_s]
+
                     cv.imshow("before resize image", img1)
                     cv.waitKey(1000)
+                    # img1 = cv.threshold(img1, 0, 255, cv.THRESH_BINARY_INV | cv.THRESH_OTSU)[1]
+                    # img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
+
+
+                    img1 = cv.resize(img1, (28, 28))
+                    img1 = cv.threshold(img1, 128, 255, cv.THRESH_BINARY_INV | cv.THRESH_OTSU)[1]
+                    cv.imshow("after resize image", img1)
+                    cv.waitKey(1000)
+                    img1 = cv.copyMakeBorder(img1, 4, 4, 4, 4, cv.BORDER_CONSTANT, value=[0, 0, 0])
                     img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
-                    img1= cv.copyMakeBorder(img1,50,50,50,50,cv.BORDER_CONSTANT,value=[255, 255, 255])
-                    img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
-                    cv.imshow("segmented image", img1)
+
+                    cv.imshow("after padding image", img1)
                     cv.waitKey(1000)
                     padded = np.array(img1)
                     padded = padded / 255.
@@ -141,6 +150,9 @@ def segment_digits(img):
     # Convert the canvas to grayscale image
     grayCanvas = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
 
+    # kernel = np.ones((3, 3), np.uint8)
+    # img1 = cv.dilate(grayCanvas, kernel, iterations=1)
+
     # Convert the values 0-255 to either 0 or 255 making it black or white instead of gray
     _, invCanvas = cv.threshold(grayCanvas, 48, 255, cv.THRESH_BINARY)
 
@@ -173,6 +185,8 @@ def segment_digits(img):
 #     print(pred, label)
 #
 # cv.destroyAllWindows()
-sample_img = cv.imread("test4.jpg")
+sample_img = cv.imread("test3.jpg")
+cv.imshow("before resize image", sample_img)
+cv.waitKey(1000)
 result = segment_digits(sample_img)
 print("result:", result)
