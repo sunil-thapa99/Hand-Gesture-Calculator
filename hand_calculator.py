@@ -5,6 +5,7 @@ import math
 import detector as dt
 
 from segmentation_final import test_pipeline_equation
+from segmentation import segment_digits
 
 pTime = 0
 cTime = 0
@@ -109,12 +110,13 @@ while True:
             prevx, prevy = x, y
     
     if is_calculator and count == 0:
-        calculation = test_pipeline_equation(invCanvas)
+        # calculation = test_pipeline_equation(invCanvas)
+        calculation = segment_digits(invCanvas)
         is_calculator = False
-        cv2.putText(imgCanvas, f'{calculation[0]} = {calculation[1]}',(10,50), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255,0,255),2)
+        cv2.putText(imgCanvas, f'{calculation[0]} = {calculation[1]}',(10,50), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255,0,255),3)
         count += 1
     if count == 0:
-        cv2.rectangle(imgCanvas, (10, 30), (210, 70), (0, 0, 0), -1)
+        cv2.rectangle(imgCanvas, (10, 10), (410, 100), (0, 0, 0), -1)
 
     # Convert the canvas to grayscale image
     grayCanvas = cv2.cvtColor(imgCanvas, cv2.COLOR_BGR2GRAY)
