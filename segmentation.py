@@ -106,7 +106,7 @@ def segment(heighty, widthx, img):
                     img1 = cv.copyMakeBorder(img1, 4, 4, 4, 4, cv.BORDER_CONSTANT, value=[0, 0, 0])
                     img1 = cv.resize(img1, (32, 32), interpolation=cv.INTER_CUBIC)
 
-                    cv.imshow("after padding image", img1)
+                    # cv.imshow("after padding image", img1)
                     # cv.waitKey(1000)
                     padded = np.array(img1)
                     padded = padded / 255.
@@ -187,7 +187,7 @@ def segment_digits(img):
 # cv.destroyAllWindows()
 if __name__ == '__main__':
     sample_img = cv.imread("i.jpeg")
-    cv.imshow("before resize image", sample_img)
+    # cv.imshow("before resize image", sample_img)
     # cv.waitKey(1000)
     result = segment_digits(sample_img)
     print("result:", result)
